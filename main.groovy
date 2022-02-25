@@ -28,6 +28,7 @@ pipeline {
             steps{
                 script{
                     dir('/var/lib/jenkins/workspace/deploy-api/Omnibnk/Omnibnk/Omnibnk_1'){
+                        sh "sudo docker-compose -f docker-compose.full.yml exec -T django chmod 777 manage.py"
                         sh "sudo docker-compose -f docker-compose.full.yml exec -T django ./manage.py makemigrations"
                         sh "sudo docker-compose -f docker-compose.full.yml exec -T django ./manage.py migrate"
                     }
