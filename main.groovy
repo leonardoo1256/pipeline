@@ -4,10 +4,11 @@ pipeline {
         stage('Clone or Update Repository'){
             steps {
                 script{
-                    if(!fileExists()){
+                    if(!fileExists('/var/lib/jenkins/workspace/deploy-api/Omnibnk/Omnibnk')){
                         sh "git clone https://github.com/leonardoo1256/Omnibnk.git"
                     }else{
-                        dir('/var/lib/jenkins/workspace/deploy-api/Omnibnk'){
+                        dir('/var/lib/jenkins/workspace/deploy-api/Omnibnk/Omnibnk'){
+                            sh "sudo git checkout dev"
                             sh "sudo git pull"
                         }
                     }
@@ -17,7 +18,7 @@ pipeline {
         stage('Build containers'){
             steps{
                 script{
-                    dir('/var/lib/jenkins/workspace/deploy-api/Omnibnk/Omnibnk_1'){
+                    dir('/var/lib/jenkins/workspace/deploy-api/Omnibnk/Omnibnk/Omnibnk_1'){
                         sh "sudo docker-compose -f docker-compose.full.yml up -d"
                     }
                 }
@@ -26,7 +27,7 @@ pipeline {
         stage('Run api changes'){
             steps{
                 script{
-                    dir('/var/lib/jenkins/workspace/deploy-api/Omnibnk/Omnibnk_1'){
+                    dir('/var/lib/jenkins/workspace/deploy-api/Omnibnk/Omnibnk/Omnibnk_1'){
                         sh "sudo docker-compose -f docker-compose.full.yml exec -T django ./manage.py makemigrations"
                         sh "sudo docker-compose -f docker-compose.full.yml exec -T django ./manage.py migrate"
                     }
